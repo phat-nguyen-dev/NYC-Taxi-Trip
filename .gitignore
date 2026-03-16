@@ -1,0 +1,7 @@
+### --- ENVIRONMENT & SECRETS ---
+# Ignore virtual environments
+.venv/
+
+### --- DATA & LOGS ---
+# Ignore raw data files and the data folder
+data/
