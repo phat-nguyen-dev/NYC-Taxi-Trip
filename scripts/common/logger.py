@@ -3,7 +3,7 @@ import datetime as dt
 VALID_LEVELS = {"INFO", "WARNING", "ERROR", "DEBUG"}
 file_path = "logs"
 
-def write_log(message, file_name, job=None, level='INFO'):
+def write_log(message, file_name="log", job=None, level='INFO'):
     # Check level if valid
     level = level.upper()
     if level not in VALID_LEVELS:
