@@ -3,5 +3,10 @@
 .venv/
 
 ### --- DATA & LOGS ---
-# Ignore raw data files and the data folder
+# Ignore all the data and log folder
 data/
+logs/
+
+### --- PYTHON BYTECODE ---
+__pycache__/
+.pytest_cache/
