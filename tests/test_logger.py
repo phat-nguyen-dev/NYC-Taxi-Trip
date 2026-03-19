@@ -1,39 +1,79 @@
 # All written by Gemini
 import os
-import pytest
 import datetime as dt
+import pytest
 from scripts.common.logger import write_log, file_path
 
-def test_write_log_creates_file():
-    # Setup: Use default "log" filename and clear old logs for testing
-    test_file = "test"
-    today = dt.datetime.now().strftime("%Y-%m-%d")
-    expected_path = f"{file_path}/{test_file}-{today}.log"
-    
-    if os.path.exists(expected_path):
-        os.remove(expected_path)
+test_file = 'test'
+today = dt.datetime.now().strftime("%Y-%m-%d")
+test_path = f"{file_path}/{test_file}-{today}.log"
 
-    # Action: Log a message using default parameters
-    write_log("Test message", test_file, job="UnitTest", level="INFO")
+# 🔹 Fixture: setup + teardown
+@pytest.fixture
+def clean_log():
+    if os.path.exists(test_path):
+        os.remove(test_path)
+    yield
+    if os.path.exists(test_path):
+        os.remove(test_path)
 
-    # Assert: Verify file creation and content
-    assert os.path.exists(expected_path) is True
-    
-    with open(expected_path, "r") as f:
-        content = f.read()
-        assert "Test message" in content
-        assert "INFO" in content
-        assert "UnitTest" in content
+def read_log():
+    with open(test_path, "r") as f:
+        return f.read()
 
-def test_invalid_level_fallback():
-    # Test unmatching level
-    test_file = "test"
-    write_log("Check invalid level", test_file, level="GIBBERISH")
-    
-    today = dt.datetime.now().strftime("%Y-%m-%d")
-    path = f"{file_path}/{test_file}-{today}.log"
-    
-    with open(path, "r") as f:
-        content = f.read()
-        assert "ERROR" in content
-        assert "Invalid level: (GIBBERISH)" in content
+def test_write_log_message_none(clean_log):
+    write_log(message=None, file_name=test_file, job='test')
+
+    content = read_log()
+    assert "| test |" in content
+    assert "| INFO |" in content
+    assert "None" in content
+
+def test_write_log_empty_message(clean_log):
+    write_log(message='', file_name=test_file, job='test')
+
+    content = read_log()
+    assert "| test |" in content
+    assert "| INFO |" in content
+
+def test_write_log_invalid_level(clean_log):
+    write_log(message='mes', file_name=test_file, job='test', level='BUG')
+
+    content = read_log()
+    assert 'Invalid level' in content
+    assert "| test |" in content
+    assert "| ERROR |" in content
+
+def test_write_log_lowercase_level(clean_log):
+    write_log(message='mes', file_name=test_file, job='test', level='info')
+
+    content = read_log()
+    assert "| test |" in content
+    assert "| INFO |" in content
+
+def test_write_log_none_job(clean_log):
+    write_log(message='mes', file_name=test_file, level='INFO')
+
+    content = read_log()
+    assert "| INFO |" in content
+
+def test_write_log_special_message(clean_log):
+    write_log(message='!@#$%^&**(())', file_name=test_file, job='test')
+
+    content = read_log()
+    assert "| test |" in content
+    assert "| INFO |" in content
+
+def test_write_log_long_message(clean_log):
+    write_log(message='abcdefghiabcdefghiabcdefghiabcdefghiabcdefghiabcdefghiabcdefghi', file_name=test_file, job='test')
+
+    content = read_log()
+    assert "| test |" in content
+    assert "| INFO |" in content
+
+def test_write_log_happy_path(clean_log):
+    write_log(message='Happy happy happy', file_name=test_file, job='test')
+
+    content = read_log()
+    assert "| test |" in content
+    assert "| INFO |" in content
