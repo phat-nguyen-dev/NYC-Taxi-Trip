@@ -1,5 +1,4 @@
 import datetime as dt
-from typing import Literal
  
 VALID_LEVELS = {"INFO", "WARNING", "ERROR", "DEBUG"}
 file_path = "logs"
@@ -7,7 +6,7 @@ file_path = "logs"
 def write_log(message: str, 
               file_name: str ="log", 
               job: str | None = None, 
-              level: Literal['INFO', 'WARNING', 'ERROR', 'DEBUG']='INFO'
+              level: str ='INFO'
               ) -> None:
     # Check level if valid
     level = level.upper()
