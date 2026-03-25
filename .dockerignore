@@ -1,0 +1,13 @@
+### --- ENVIRONMENT & SECRETS ---
+# Ignore virtual environments
+.env
+.venv/
+
+### --- DATA & LOGS ---
+# Ignore all the data and log folder
+data/
+logs/
+
+### --- PYTHON BYTECODE ---
+__pycache__/
+.pytest_cache/
